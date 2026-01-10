@@ -33,6 +33,8 @@ export interface Location {
   shelf?: string
   capacity?: number
   is_active: boolean
+  created_at: string
+  updated_at: string
 }
 
 export interface Inventory {
