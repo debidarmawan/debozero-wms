@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useAuthStore } from '@/store/authStore'
-import api from '@/lib/api'
+import { inventoryService } from '@/services/inventoryService'
 import { Inventory } from '@/types'
 
 export default function InventoryPage() {
@@ -22,9 +23,9 @@ export default function InventoryPage() {
 
   const loadInventory = async () => {
     try {
-      const response = await api.get('/inventory?limit=50')
-      if (response.data.data) {
-        setInventories(response.data.data)
+      const response = await inventoryService.getAll(1, 50)
+      if (response.data) {
+        setInventories(response.data)
       }
     } catch (error) {
       console.error('Failed to load inventory:', error)
@@ -45,7 +46,48 @@ export default function InventoryPage() {
         </div>
       </header>
 
+      {/* Navigation */}
+      <nav className="bg-white border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex space-x-8">
+            <Link
+              href="/dashboard"
+              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/products"
+              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            >
+              Products
+            </Link>
+            <Link
+              href="/inventory"
+              className="border-b-2 border-primary-500 py-4 px-1 text-sm font-medium text-primary-600"
+            >
+              Inventory
+            </Link>
+            <Link
+              href="/locations"
+              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            >
+              Locations
+            </Link>
+          </div>
+        </div>
+      </nav>
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-4 flex justify-end">
+          <Link
+            href="/inventory/adjust"
+            className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+          >
+            Adjust Stock
+          </Link>
+        </div>
+
         {loading ? (
           <div className="flex justify-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>

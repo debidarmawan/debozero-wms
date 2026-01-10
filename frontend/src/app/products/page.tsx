@@ -54,6 +54,38 @@ export default function ProductsPage() {
         </div>
       </header>
 
+      {/* Navigation */}
+      <nav className="bg-white border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex space-x-8">
+            <Link
+              href="/dashboard"
+              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/products"
+              className="border-b-2 border-primary-500 py-4 px-1 text-sm font-medium text-primary-600"
+            >
+              Products
+            </Link>
+            <Link
+              href="/inventory"
+              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            >
+              Inventory
+            </Link>
+            <Link
+              href="/locations"
+              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            >
+              Locations
+            </Link>
+          </div>
+        </div>
+      </nav>
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-4 flex justify-between items-center">
           <input
