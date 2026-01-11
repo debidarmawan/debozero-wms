@@ -16,12 +16,14 @@ func SetupRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	productService := services.NewProductService(db)
 	inventoryService := services.NewInventoryService(db)
 	locationService := services.NewLocationService(db)
+	stockMovementService := services.NewStockMovementService(db)
 
 	// Initialize handlers
 	authHandler := handlers.NewAuthHandler(authService)
 	productHandler := handlers.NewProductHandler(productService)
 	inventoryHandler := handlers.NewInventoryHandler(inventoryService)
 	locationHandler := handlers.NewLocationHandler(locationService)
+	stockMovementHandler := handlers.NewStockMovementHandler(stockMovementService)
 
 	// Public routes
 	api := app.Group("/api/v1")
@@ -64,6 +66,14 @@ func SetupRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 			locations.Get("/:id", locationHandler.GetByID)
 			locations.Put("/:id", locationHandler.Update)
 			locations.Delete("/:id", locationHandler.Delete)
+		}
+
+		// Stock Movement routes
+		movements := protected.Group("/stock-movements")
+		{
+			movements.Get("/", stockMovementHandler.GetAll)
+			movements.Get("/:id", stockMovementHandler.GetByID)
+			movements.Get("/product/:productId", stockMovementHandler.GetByProduct)
 		}
 	}
 }

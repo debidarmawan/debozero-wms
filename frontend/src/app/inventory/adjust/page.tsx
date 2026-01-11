@@ -174,7 +174,7 @@ export default function AdjustStockPage() {
             <label className="block text-sm font-medium text-gray-700">Product *</label>
             <select
               {...register('product_id')}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
             >
               <option value="">Select a product</option>
               {products.map((product) => (
@@ -192,7 +192,7 @@ export default function AdjustStockPage() {
             <label className="block text-sm font-medium text-gray-700">Location *</label>
             <select
               {...register('location_id')}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
             >
               <option value="">Select a location</option>
               {locations
@@ -227,7 +227,7 @@ export default function AdjustStockPage() {
               type="number"
               step="0.01"
               {...register('quantity', { valueAsNumber: true })}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
               placeholder="e.g., 10 or -5"
             />
             {errors.quantity && (
@@ -269,7 +269,7 @@ export default function AdjustStockPage() {
             <textarea
               {...register('notes')}
               rows={3}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
               placeholder="Optional notes about this adjustment..."
             />
           </div>

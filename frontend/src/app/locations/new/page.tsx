@@ -73,7 +73,7 @@ export default function NewLocationPage() {
             </label>
             <input
               {...register('code')}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
               placeholder="A-01-01"
             />
             {errors.code && <p className="mt-1 text-sm text-red-600">{errors.code.message}</p>}
@@ -83,7 +83,7 @@ export default function NewLocationPage() {
             <label className="block text-sm font-medium text-gray-700">Name *</label>
             <input
               {...register('name')}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
               placeholder="Zone A, Aisle 1, Shelf 1"
             />
             {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
@@ -94,7 +94,7 @@ export default function NewLocationPage() {
               <label className="block text-sm font-medium text-gray-700">Zone</label>
               <input
                 {...register('zone')}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
                 placeholder="A, B, C"
               />
             </div>
@@ -102,7 +102,7 @@ export default function NewLocationPage() {
               <label className="block text-sm font-medium text-gray-700">Aisle</label>
               <input
                 {...register('aisle')}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
                 placeholder="01, 02"
               />
             </div>
@@ -110,7 +110,7 @@ export default function NewLocationPage() {
               <label className="block text-sm font-medium text-gray-700">Shelf</label>
               <input
                 {...register('shelf')}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
                 placeholder="01, 02"
               />
             </div>
@@ -122,7 +122,7 @@ export default function NewLocationPage() {
               type="number"
               step="0.01"
               {...register('capacity', { valueAsNumber: true })}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
               placeholder="Max weight or volume"
             />
           </div>
