@@ -69,6 +69,40 @@ export interface StockMovement {
   }
 }
 
+export type POStatus = 'draft' | 'pending' | 'partial' | 'received' | 'cancelled'
+
+export interface PurchaseOrderItem {
+  id: string
+  purchase_order_id: string
+  product_id: string
+  quantity: number
+  received_qty: number
+  unit_price?: number
+  notes?: string
+  product?: Product
+}
+
+export interface PurchaseOrder {
+  id: string
+  po_number: string
+  vendor_name: string
+  vendor_email?: string
+  vendor_phone?: string
+  status: POStatus
+  expected_date?: string
+  received_date?: string
+  notes?: string
+  created_by: string
+  created_at: string
+  updated_at: string
+  items?: PurchaseOrderItem[]
+  user?: {
+    id: string
+    name: string
+    email: string
+  }
+}
+
 export interface ApiResponse<T> {
   error: boolean
   data?: T
