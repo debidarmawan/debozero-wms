@@ -17,6 +17,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	inventoryService := services.NewInventoryService(db)
 	locationService := services.NewLocationService(db)
 	stockMovementService := services.NewStockMovementService(db)
+	purchaseOrderService := services.NewPurchaseOrderService(db)
 
 	// Initialize handlers
 	authHandler := handlers.NewAuthHandler(authService)
@@ -24,6 +25,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	inventoryHandler := handlers.NewInventoryHandler(inventoryService)
 	locationHandler := handlers.NewLocationHandler(locationService)
 	stockMovementHandler := handlers.NewStockMovementHandler(stockMovementService)
+	purchaseOrderHandler := handlers.NewPurchaseOrderHandler(purchaseOrderService)
 
 	// Public routes
 	api := app.Group("/api/v1")
@@ -74,6 +76,20 @@ func SetupRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 			movements.Get("/", stockMovementHandler.GetAll)
 			movements.Get("/:id", stockMovementHandler.GetByID)
 			movements.Get("/product/:productId", stockMovementHandler.GetByProduct)
+		}
+
+		// Purchase Order routes
+		pos := protected.Group("/purchase-orders")
+		{
+			pos.Post("/", purchaseOrderHandler.Create)
+			pos.Get("/", purchaseOrderHandler.GetAll)
+			pos.Get("/:id", purchaseOrderHandler.GetByID)
+			pos.Put("/:id", purchaseOrderHandler.Update)
+			pos.Post("/:id/cancel", purchaseOrderHandler.Cancel)
+			pos.Post("/:id/receive", purchaseOrderHandler.Receive)
+			pos.Post("/:id/items", purchaseOrderHandler.AddItem)
+			pos.Put("/:id/items/:itemId", purchaseOrderHandler.UpdateItem)
+			pos.Delete("/:id/items/:itemId", purchaseOrderHandler.DeleteItem)
 		}
 	}
 }
