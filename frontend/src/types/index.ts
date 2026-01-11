@@ -48,6 +48,27 @@ export interface Inventory {
   location?: Location
 }
 
+export interface StockMovement {
+  id: string
+  product_id: string
+  from_location_id?: string
+  to_location_id: string
+  type: 'inbound' | 'outbound' | 'transfer' | 'adjustment'
+  quantity: number
+  reference?: string
+  notes?: string
+  created_by: string
+  created_at: string
+  product?: Product
+  from_location?: Location
+  to_location?: Location
+  user?: {
+    id: string
+    name: string
+    email: string
+  }
+}
+
 export interface ApiResponse<T> {
   error: boolean
   data?: T

@@ -68,7 +68,7 @@ export default function NewProductPage() {
             <label className="block text-sm font-medium text-gray-700">SKU *</label>
             <input
               {...register('sku')}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
             />
             {errors.sku && <p className="mt-1 text-sm text-red-600">{errors.sku.message}</p>}
           </div>
@@ -77,7 +77,7 @@ export default function NewProductPage() {
             <label className="block text-sm font-medium text-gray-700">Name *</label>
             <input
               {...register('name')}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
             />
             {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
           </div>
@@ -87,7 +87,7 @@ export default function NewProductPage() {
             <textarea
               {...register('description')}
               rows={3}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
 
@@ -96,7 +96,7 @@ export default function NewProductPage() {
               <label className="block text-sm font-medium text-gray-700">Category</label>
               <input
                 {...register('category')}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
               />
             </div>
             <div>
@@ -104,7 +104,7 @@ export default function NewProductPage() {
               <input
                 {...register('unit')}
                 defaultValue="pcs"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
               />
             </div>
           </div>
@@ -116,14 +116,14 @@ export default function NewProductPage() {
                 type="number"
                 step="0.01"
                 {...register('weight', { valueAsNumber: true })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Barcode</label>
               <input
                 {...register('barcode')}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:ring-primary-500 focus:border-primary-500"
               />
             </div>
           </div>
