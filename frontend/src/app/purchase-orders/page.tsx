@@ -10,7 +10,7 @@ import { format } from 'date-fns'
 
 export default function PurchaseOrdersPage() {
   const router = useRouter()
-  const { isAuthenticated } = useAuthStore()
+  const { isAuthenticated, _hasHydrated } = useAuthStore()
   const [pos, setPos] = useState<PurchaseOrder[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -18,12 +18,15 @@ export default function PurchaseOrdersPage() {
   const [statusFilter, setStatusFilter] = useState('')
 
   useEffect(() => {
+    // Wait for hydration before checking auth
+    if (!_hasHydrated) return
+
     if (!isAuthenticated) {
       router.push('/login')
       return
     }
     loadPOs()
-  }, [isAuthenticated, router, search, statusFilter])
+  }, [isAuthenticated, _hasHydrated, router, search, statusFilter])
 
   const loadPOs = async () => {
     setLoading(true)
@@ -67,8 +70,12 @@ export default function PurchaseOrdersPage() {
     }
   }
 
-  if (!isAuthenticated) {
-    return null
+  if (!_hasHydrated || !isAuthenticated) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      </div>
+    )
   }
 
   return (
