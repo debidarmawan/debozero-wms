@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useAuthStore } from '@/store/authStore'
 import { locationService } from '@/services/locationService'
 import { Location } from '@/types'
+import { AuthenticatedLayout } from '@/components/AuthenticatedLayout'
 
 export default function LocationsPage() {
   const router = useRouter()
@@ -60,52 +61,7 @@ export default function LocationsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">Locations</h1>
-        </div>
-      </header>
-
-      {/* Navigation */}
-      <nav className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-8">
-            <Link
-              href="/dashboard"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/products"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            >
-              Products
-            </Link>
-            <Link
-              href="/inventory"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            >
-              Inventory
-            </Link>
-            <Link
-              href="/locations"
-              className="border-b-2 border-primary-500 py-4 px-1 text-sm font-medium text-primary-600"
-            >
-              Locations
-            </Link>
-            <Link
-              href="/movements"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            >
-              Movements
-            </Link>
-          </div>
-        </div>
-      </nav>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <AuthenticatedLayout title="Locations">
         <div className="mb-4 flex justify-between items-center">
           <input
             type="text"
@@ -187,7 +143,6 @@ export default function LocationsPage() {
             </ul>
           </div>
         )}
-      </main>
-    </div>
+    </AuthenticatedLayout>
   )
 }
