@@ -9,6 +9,7 @@ import { productService } from '@/services/productService'
 import { locationService } from '@/services/locationService'
 import { StockMovement, Product, Location } from '@/types'
 import { format } from 'date-fns'
+import { AuthenticatedLayout } from '@/components/AuthenticatedLayout'
 
 export default function MovementsPage() {
   const router = useRouter()
@@ -130,52 +131,7 @@ export default function MovementsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">Stock Movement History</h1>
-        </div>
-      </header>
-
-      {/* Navigation */}
-      <nav className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-8">
-            <Link
-              href="/dashboard"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/products"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            >
-              Products
-            </Link>
-            <Link
-              href="/inventory"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            >
-              Inventory
-            </Link>
-            <Link
-              href="/locations"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            >
-              Locations
-            </Link>
-            <Link
-              href="/movements"
-              className="border-b-2 border-primary-500 py-4 px-1 text-sm font-medium text-primary-600"
-            >
-              Movements
-            </Link>
-          </div>
-        </div>
-      </nav>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <AuthenticatedLayout title="Stock Movement History">
         {/* Filters */}
         <div className="bg-white shadow rounded-lg p-6 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -360,7 +316,6 @@ export default function MovementsPage() {
             )}
           </>
         )}
-      </main>
-    </div>
+    </AuthenticatedLayout>
   )
 }

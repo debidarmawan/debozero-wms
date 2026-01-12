@@ -7,6 +7,7 @@ import { useAuthStore } from '@/store/authStore'
 import { purchaseOrderService } from '@/services/purchaseOrderService'
 import { PurchaseOrder } from '@/types'
 import { format } from 'date-fns'
+import { AuthenticatedLayout } from '@/components/AuthenticatedLayout'
 
 export default function PurchaseOrdersPage() {
   const router = useRouter()
@@ -79,58 +80,7 @@ export default function PurchaseOrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">Purchase Orders</h1>
-        </div>
-      </header>
-
-      {/* Navigation */}
-      <nav className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-8">
-            <Link
-              href="/dashboard"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/products"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            >
-              Products
-            </Link>
-            <Link
-              href="/inventory"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            >
-              Inventory
-            </Link>
-            <Link
-              href="/locations"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            >
-              Locations
-            </Link>
-            <Link
-              href="/movements"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            >
-              Movements
-            </Link>
-            <Link
-              href="/purchase-orders"
-              className="border-b-2 border-primary-500 py-4 px-1 text-sm font-medium text-primary-600"
-            >
-              Purchase Orders
-            </Link>
-          </div>
-        </div>
-      </nav>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <AuthenticatedLayout title="Purchase Orders">
         {error && (
           <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
             {error}
@@ -223,7 +173,6 @@ export default function PurchaseOrdersPage() {
             </ul>
           </div>
         )}
-      </main>
-    </div>
+    </AuthenticatedLayout>
   )
 }
