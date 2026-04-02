@@ -1,0 +1,196 @@
+// Warehouse Management System - Prisma Schema
+// Database: MySQL
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// User model untuk authentication
+model user {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  createdBy String?
+  updatedBy String?
+  deletedBy String?
+  email     String    @unique
+  password  String
+  name      String
+  role      String    @default("staff") // admin, manager, staff
+  warehouseId String?
+  warehouse warehouse? @relation(fields: [warehouseId], references: [id])
+  
+  @@index([warehouseId])
+}
+
+// Warehouse model untuk lokasi gudang
+model warehouse {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  createdBy String?
+  updatedBy String?
+  deletedBy String?
+  name      String
+  location  String
+  city      String
+  capacity  Int       // total kapasitas dalam unit
+  users     user[]
+  inventories inventory_item[]
+  orders    orders[]
+  shipments shipment[]
+}
+
+// Product model
+model product {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  createdBy String?
+  updatedBy String?
+  deletedBy String?
+  sku       String    @unique
+  name      String
+  description String?
+  price     Decimal   @db.Decimal(12, 2)
+  weight    Decimal?  @db.Decimal(10, 2) // dalam kg
+  inventories inventory_item[]
+  orderDetails order_detail[]
+  
+  @@index([sku])
+}
+
+// Inventory Item - tracking stock per warehouse
+model inventory_item {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  createdBy String?
+  updatedBy String?
+  deletedBy String?
+  productId String
+  product   product   @relation(fields: [productId], references: [id])
+  warehouseId String
+  warehouse warehouse @relation(fields: [warehouseId], references: [id])
+  quantity  Int
+  minStock  Int       @default(10)
+  lastRestocked DateTime @default(now())
+  
+  @@unique([productId, warehouseId])
+  @@index([warehouseId])
+  @@index([productId])
+}
+
+// Order model (bisa PO atau SO)
+model orders {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  createdBy String?
+  updatedBy String?
+  deletedBy String?
+  orderNumber String  @unique
+  type      String    // "inbound" (PO) atau "outbound" (SO)
+  warehouseId String
+  warehouse warehouse @relation(fields: [warehouseId], references: [id])
+  status    String    @default("pending") // pending, confirmed, shipped, delivered, cancelled
+  totalAmount Decimal @db.Decimal(15, 2)
+  details   order_detail[]
+  shipment  shipment?
+  
+  @@index([warehouseId])
+  @@index([status])
+}
+
+// Order Detail
+model order_detail {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  createdBy String?
+  updatedBy String?
+  deletedBy String?
+  orderId   String
+  orders     orders     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   product   @relation(fields: [productId], references: [id])
+  quantity  Int
+  unitPrice Decimal   @db.Decimal(12, 2)
+  received  Int       @default(0)
+  
+  @@index([orderId])
+  @@index([productId])
+}
+
+// Shipment model
+model shipment {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  createdBy String?
+  updatedBy String?
+  deletedBy String?
+  orderId   String    @unique
+  orders     orders     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  warehouseId String
+  warehouse warehouse @relation(fields: [warehouseId], references: [id])
+  trackingNumber String @unique
+  carrier   String?
+  status    String    @default("pending") // pending, in_transit, delivered, cancelled
+  shippedAt DateTime?
+  deliveredAt DateTime?
+  trackings shipment_tracking[]
+  
+  @@index([warehouseId])
+  @@index([status])
+}
+
+// Shipment Tracking - untuk tracking history
+model shipment_tracking {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  createdBy String?
+  updatedBy String?
+  deletedBy String?
+  shipmentId String
+  shipment  shipment  @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  status    String
+  location  String?
+  notes     String?
+  timestamp DateTime  @default(now())
+  
+  @@index([shipmentId])
+}
+
+// Audit Log untuk tracking semua aksi
+model audit_log {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  createdBy String?
+  updatedBy String?
+  deletedBy String?
+  action    String    // create, update, delete, status_change
+  module    String    // user, product, inventory, orders, shipment
+  recordId  String
+  oldValue  String?   @db.Text
+  newValue  String?   @db.Text
+  
+  @@index([module])
+  @@index([recordId])
+}
