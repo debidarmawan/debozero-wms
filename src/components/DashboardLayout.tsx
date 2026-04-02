@@ -28,15 +28,23 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Get user info from localStorage
+    // Get user info from localStorage on mount only
     const user = localStorage.getItem('user');
-    if (user) {
+    const token = localStorage.getItem('token');
+    
+    if (!token || !user) {
+      router.push('/login');
+      return;
+    }
+    
+    try {
       const userData = JSON.parse(user);
       setUserRole(userData.role);
-    } else {
+    } catch (error) {
+      console.error('Failed to parse user data:', error);
       router.push('/login');
     }
-  }, [router]);
+  }, []); // Empty dependency array - run only once on mount
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -49,10 +57,10 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className={`${isOpen ? 'w-64' : 'w-20'} bg-gray-900 text-white transition-all duration-300 flex flex-col`}>
+      <aside className={`${isOpen ? 'w-64' : 'w-15'} bg-gray-900 text-white transition-all duration-300 flex flex-col`}>
         <div className="p-4 flex items-center justify-between">
-          <h1 className={`font-bold text-xl transition-all ${isOpen ? 'opacity-100' : 'opacity-0'}`}>WMS</h1>
-          <button onClick={() => setIsOpen(!isOpen)} className="p-1 hover:bg-gray-800 rounded">
+          {isOpen && <h1 className="font-bold text-xl">WMS</h1>}
+          <button onClick={() => setIsOpen(!isOpen)} className={`p-1 hover:bg-gray-800 rounded ${!isOpen && 'mx-auto'}`}>
             ☰
           </button>
         </div>
