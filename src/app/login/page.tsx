@@ -26,6 +26,8 @@ export default function LoginPage() {
     try {
       const response = await axios.post("/api/auth/login", data);
       if (response.data.success) {
+        localStorage.setItem("token", response.data.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.data.user));
         router.push("/dashboard");
       }
     } catch (err: any) {
@@ -89,7 +91,7 @@ export default function LoginPage() {
             disabled={isLoading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-colors duration-200 shadow-lg shadow-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? "Loging In..." : "Login"}
+            {isLoading ? "Logging In..." : "Login"}
           </button>
         </form>
 
