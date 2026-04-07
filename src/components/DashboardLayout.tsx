@@ -57,7 +57,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className={`${isOpen ? 'w-64' : 'w-15'} bg-gray-900 text-white transition-all duration-300 flex flex-col`}>
+      <aside className={`${isOpen ? 'w-64' : 'w-16'} bg-gray-900 text-white transition-all duration-300 flex flex-col`}>
         <div className="p-4 flex items-center justify-between">
           {isOpen && <h1 className="font-bold text-xl">WMS</h1>}
           <button onClick={() => setIsOpen(!isOpen)} className={`p-1 hover:bg-gray-800 rounded ${!isOpen && 'mx-auto'}`}>
@@ -97,10 +97,19 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white shadow">
           <div className="px-6 py-4 flex items-center justify-between">
-            <h2 className="text-2xl font-semibold text-gray-800">Warehouse Management System</h2>
-            <div className="text-sm text-gray-600">
-              Role: <span className="font-semibold">{userRole}</span>
+            <div>
+              <h2 className="text-2xl font-semibold text-gray-800">Warehouse Management System</h2>
+              <div className="text-sm text-gray-600">
+                Role: <span className="font-semibold">{userRole}</span>
+              </div>
             </div>
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100 transition-colors"
+            >
+              <span>🚪</span>
+              <span>Logout</span>
+            </button>
           </div>
         </header>
 
