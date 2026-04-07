@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTokenFromRequest, verifyToken } from "@/lib/auth";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Check if route needs authentication
   const protectedRoutes = ["/api/admin", "/api/products", "/api/warehouses", "/api/orders", "/api/inventory", "/api/shipments"];
   
