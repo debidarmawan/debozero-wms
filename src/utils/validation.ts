@@ -12,10 +12,10 @@ export const RegisterSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
 });
 
-// Product schemas
+// Item schemas
 export const ProductSchema = z.object({
   code: z.string().min(1, "SKU is required"),
-  name: z.string().min(1, "Product name is required"),
+  name: z.string().min(1, "Item name is required"),
   status: z.boolean().optional(),
   item_type_id: z.string().optional(),
 });
@@ -35,7 +35,7 @@ export const CreateOrderSchema = z.object({
   warehouse_id: z.string().uuid("Warehouse ID must be a valid UUID"),
   details: z.array(
     z.object({
-      item_id: z.string().uuid("Product ID must be a valid UUID"),
+      item_id: z.string().uuid("Item ID must be a valid UUID"),
       quantity: z.number().positive(),
       unit_price: z.number().positive(),
     })

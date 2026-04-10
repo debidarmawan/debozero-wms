@@ -1,8 +1,19 @@
 'use client';
 
 import { DashboardLayout } from '@/components/DashboardLayout';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import {
+  ClipboardList,
+  Tags,
+  Warehouse,
+  AlertTriangle,
+  PlusCircle,
+  PackageSearch,
+  Truck,
+  ArrowRight,
+} from 'lucide-react';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -43,59 +54,66 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="text-center">Loading...</div>
+        <div className="rounded-2xl border border-slate-200 bg-white/70 p-10 text-center text-slate-600 shadow-sm">
+          Loading dashboard...
+        </div>
       </DashboardLayout>
     );
   }
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
+      <div className="space-y-8">
+        <section className="rounded-3xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-7 text-white shadow-xl">
+          <h1 className="text-3xl font-bold">Welcome back</h1>
+          <p className="mt-2 text-cyan-50">
+            Track order flow, stock health, and warehouse activity in one place.
+          </p>
+        </section>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Total Orders"
             value={stats.totalOrders}
-            icon="📋"
-            color="bg-blue-100"
+            icon={<ClipboardList size={20} />}
+            accent="from-blue-500 to-cyan-500"
           />
           <StatCard
-            title="Products"
+            title="Items"
             value={stats.totalProducts}
-            icon="🏷️"
-            color="bg-green-100"
+            icon={<Tags size={20} />}
+            accent="from-emerald-500 to-green-500"
           />
           <StatCard
             title="Warehouses"
             value={stats.totalWarehouses}
-            icon="🏭"
-            color="bg-yellow-100"
+            icon={<Warehouse size={20} />}
+            accent="from-amber-500 to-orange-500"
           />
           <StatCard
             title="Low Stock Items"
             value={stats.lowStockItems}
-            icon="⚠️"
-            color="bg-red-100"
+            icon={<AlertTriangle size={20} />}
+            accent="from-rose-500 to-red-500"
           />
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <QuickActionButton label="Create Order" href="/dashboard/orders" icon="📝" />
-            <QuickActionButton label="Add Product" href="/dashboard/products" icon="➕" />
-            <QuickActionButton label="Check Inventory" href="/dashboard/inventory" icon="📦" />
-            <QuickActionButton label="Track Shipment" href="/dashboard/shipments" icon="🚚" />
+        <div className="rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm">
+          <h2 className="mb-4 text-xl font-semibold text-slate-800">Quick Actions</h2>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <QuickActionButton label="Create Order" href="/dashboard/orders" icon={<PlusCircle size={18} />} />
+            <QuickActionButton label="Add Item" href="/dashboard/items" icon={<Tags size={18} />} />
+            <QuickActionButton label="Check Inventory" href="/dashboard/inventory" icon={<PackageSearch size={18} />} />
+            <QuickActionButton label="Track Shipment" href="/dashboard/shipments" icon={<Truck size={18} />} />
           </div>
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Recent Activity</h2>
-          <div className="text-gray-600 text-center py-8">
+        <div className="rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm">
+          <h2 className="mb-4 text-xl font-semibold text-slate-800">Recent Activity</h2>
+          <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 py-8 text-center text-slate-500">
             No recent activity
           </div>
         </div>
@@ -108,21 +126,23 @@ function StatCard({
   title,
   value,
   icon,
-  color,
+  accent,
 }: {
   title: string;
   value: number;
-  icon: string;
-  color: string;
+  icon: ReactNode;
+  accent: string;
 }) {
   return (
-    <div className={`${color} rounded-lg shadow p-6`}>
+    <div className="group rounded-2xl border border-slate-200 bg-white/85 p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-gray-600 text-sm">{title}</p>
-          <p className="text-3xl font-bold text-gray-800">{value}</p>
+          <p className="text-sm text-slate-500">{title}</p>
+          <p className="mt-1 text-3xl font-bold text-slate-800">{value}</p>
         </div>
-        <span className="text-4xl">{icon}</span>
+        <span className={`inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br text-white shadow ${accent}`}>
+          {icon}
+        </span>
       </div>
     </div>
   );
@@ -135,15 +155,20 @@ function QuickActionButton({
 }: {
   label: string;
   href: string;
-  icon: string;
+  icon: ReactNode;
 }) {
   return (
-    <a
+    <Link
       href={href}
-      className="flex items-center justify-center space-x-2 p-4 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+      className="group flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-700 transition-all hover:border-cyan-200 hover:bg-cyan-50/40"
     >
-      <span className="text-2xl">{icon}</span>
-      <span className="font-semibold text-gray-700">{label}</span>
-    </a>
+      <span className="inline-flex items-center gap-2">
+        <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-cyan-100 group-hover:text-cyan-700">
+          {icon}
+        </span>
+        <span className="font-medium">{label}</span>
+      </span>
+      <ArrowRight size={16} className="text-slate-400 group-hover:text-cyan-600" />
+    </Link>
   );
 }
