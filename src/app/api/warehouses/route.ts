@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
             select: { inventories: true, orders: true },
           },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { created_at: "desc" },
       }),
       prisma.warehouse.count(),
     ]);

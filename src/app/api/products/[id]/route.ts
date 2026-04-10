@@ -6,11 +6,12 @@ import { successResponse, errorResponse, notFoundResponse } from "@/utils/respon
 // GET single product
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const product = await prisma.product.findUnique({
-      where: { id: params.id },
+    const { id } = await context.params;
+    const product = await prisma.item.findUnique({
+      where: { id },
       include: {
         inventories: {
           include: {
@@ -34,14 +35,15 @@ export async function GET(
 // PUT - Update product
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const body = await request.json();
     const validatedData = ProductSchema.partial().parse(body);
 
-    const product = await prisma.product.update({
-      where: { id: params.id },
+    const product = await prisma.item.update({
+      where: { id },
       data: validatedData,
     });
 
@@ -58,11 +60,12 @@ export async function PUT(
 // DELETE - Delete product
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const product = await prisma.product.delete({
-      where: { id: params.id },
+    const { id } = await context.params;
+    const product = await prisma.item.delete({
+      where: { id },
     });
 
     return successResponse(product, "Product deleted successfully");

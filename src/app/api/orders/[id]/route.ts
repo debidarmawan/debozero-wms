@@ -6,15 +6,16 @@ import { z } from "zod";
 // GET single order
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const order = await prisma.orders.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         warehouse: true,
         details: {
-          include: { product: true },
+          include: { item: true },
         },
         shipment: {
           include: {
@@ -48,20 +49,21 @@ const UpdateOrderSchema = z.object({
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const body = await request.json();
     const validatedData = UpdateOrderSchema.parse(body);
 
     const order = await prisma.orders.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         status: validatedData.status,
       },
       include: {
         warehouse: true,
-        details: { include: { product: true } },
+        details: { include: { item: true } },
       },
     });
 
@@ -78,11 +80,12 @@ export async function PUT(
 // DELETE - Cancel order
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const order = await prisma.orders.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return successResponse(order, "Order cancelled successfully");

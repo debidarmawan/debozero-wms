@@ -44,14 +44,15 @@ export async function POST(request: NextRequest) {
           email: user.email,
           name: user.name,
           role: user.role,
-          warehouseId: user.warehouseId,
+          warehouse_id: user.warehouse_id,
         },
         token,
       },
       "Login successful"
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Login error:", error);
-    return errorResponse(error.message || "Login failed", 400);
+    const message = error instanceof Error ? error.message : "Login failed";
+    return errorResponse(message, 400);
   }
 }

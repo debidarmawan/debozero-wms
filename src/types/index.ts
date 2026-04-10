@@ -1,13 +1,13 @@
 export interface User {
-  id: number;
+  id: string;
   email: string;
   name: string;
   role: string;
-  warehouseId?: number;
+  warehouse_id?: string;
 }
 
 export interface AuthToken {
-  userId: number;
+  userId: string;
   email: string;
   role: string;
 }

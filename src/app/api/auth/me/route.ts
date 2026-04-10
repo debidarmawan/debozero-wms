@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
         email: true,
         name: true,
         role: true,
-        warehouseId: true,
+        warehouse_id: true,
       },
     });
 

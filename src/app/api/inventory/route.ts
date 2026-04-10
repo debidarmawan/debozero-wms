@@ -4,25 +4,25 @@ import { successResponse, errorResponse, createdResponse } from "@/utils/respons
 import { z } from "zod";
 
 const InventorySchema = z.object({
-  productId: z.string().uuid(),
-  warehouseId: z.string().uuid(),
+  item_id: z.string().uuid(),
+  warehouse_id: z.string().uuid(),
   quantity: z.number().positive(),
-  minStock: z.number().nonnegative().optional(),
+  min_stock: z.number().nonnegative().optional(),
 });
 
 // GET inventory items with filters
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const warehouseId = searchParams.get("warehouseId");
+    const warehouse_id = searchParams.get("warehouse_id");
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
 
     const skip = (page - 1) * limit;
 
     const where: any = {};
-    if (warehouseId) {
-      where.warehouseId = warehouseId;
+    if (warehouse_id) {
+      where.warehouse_id = warehouse_id;
     }
 
     const [items, total] = await Promise.all([
@@ -31,10 +31,10 @@ export async function GET(request: NextRequest) {
         skip,
         take: limit,
         include: {
-          product: true,
+          item: true,
           warehouse: true,
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { created_at: "desc" },
       }),
       prisma.inventory_item.count({ where }),
     ]);
@@ -67,9 +67,9 @@ export async function POST(request: NextRequest) {
     // Check if already exists
     const existing = await prisma.inventory_item.findUnique({
       where: {
-        productId_warehouseId: {
-          productId: validatedData.productId,
-          warehouseId: validatedData.warehouseId,
+        item_id_warehouse_id: {
+          item_id: validatedData.item_id,
+          warehouse_id: validatedData.warehouse_id,
         },
       },
     });
@@ -78,18 +78,18 @@ export async function POST(request: NextRequest) {
       // Update existing inventory
       const updated = await prisma.inventory_item.update({
         where: {
-          productId_warehouseId: {
-            productId: validatedData.productId,
-            warehouseId: validatedData.warehouseId,
+          item_id_warehouse_id: {
+            item_id: validatedData.item_id,
+            warehouse_id: validatedData.warehouse_id,
           },
         },
         data: {
           quantity: validatedData.quantity,
-          minStock: validatedData.minStock,
-          lastRestocked: new Date(),
+          min_stock: validatedData.min_stock,
+          last_restocked: new Date(),
         },
         include: {
-          product: true,
+          item: true,
           warehouse: true,
         },
       });
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
     const inventoryItem = await prisma.inventory_item.create({
       data: validatedData,
       include: {
-        product: true,
+        item: true,
         warehouse: true,
       },
     });
