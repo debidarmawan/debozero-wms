@@ -1,7 +1,7 @@
-import { DashboardPageHeader } from '@/app/dashboard/_components/DashboardPageHeader';
+import { DashboardPageHeader } from '@/components/DashboardPageHeader';
 import { Boxes } from 'lucide-react';
 
-export default function DashboardInventoryPage() {
+export default function InventoryPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
