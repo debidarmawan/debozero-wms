@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const type = searchParams.get("type"); // 'inbound' or 'outbound'
     const status = searchParams.get("status");
-    const warehouseId = searchParams.get("warehouseId");
+    const warehouse_id = searchParams.get("warehouse_id");
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
 
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const where: any = {};
     if (type) where.type = type;
     if (status) where.status = status;
-    if (warehouseId) where.warehouseId = warehouseId;
+    if (warehouse_id) where.warehouse_id = warehouse_id;
 
     const [orders, total] = await Promise.all([
       prisma.orders.findMany({
@@ -29,11 +29,11 @@ export async function GET(request: NextRequest) {
         include: {
           warehouse: true,
           details: {
-            include: { product: true },
+            include: { item: true },
           },
           shipment: true,
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { created_at: "desc" },
       }),
       prisma.orders.count({ where }),
     ]);
@@ -64,17 +64,17 @@ export async function POST(request: NextRequest) {
     const validatedData = CreateOrderSchema.parse(body);
 
     // Calculate total amount
-    const totalAmount = validatedData.details.reduce((sum, item) => {
-      return sum + item.quantity * item.unitPrice;
+    const total_amount = validatedData.details.reduce((sum, item) => {
+      return sum + item.quantity * item.unit_price;
     }, 0);
 
     // Create order with details
     const order = await prisma.orders.create({
       data: {
-        orderNumber: validatedData.orderNumber,
+        order_number: validatedData.order_number,
         type: validatedData.type,
-        warehouseId: validatedData.warehouseId,
-        totalAmount: new Decimal(totalAmount),
+        warehouse_id: validatedData.warehouse_id,
+        total_amount: new Decimal(total_amount),
         details: {
           createMany: {
             data: validatedData.details,
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
       include: {
         warehouse: true,
         details: {
-          include: { product: true },
+          include: { item: true },
         },
       },
     });

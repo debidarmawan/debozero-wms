@@ -6,14 +6,15 @@ import { z } from "zod";
 // GET single shipment
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const shipment = await prisma.shipment.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         orders: {
-          include: { details: { include: { product: true } } },
+          include: { details: { include: { item: true } } },
         },
         warehouse: true,
         trackings: { orderBy: { timestamp: "desc" } },
@@ -34,32 +35,33 @@ export async function GET(
 // PUT - Update shipment status
 const UpdateShipmentSchema = z.object({
   status: z.enum(["pending", "in_transit", "delivered", "cancelled"]),
-  shippedAt: z.string().optional(),
-  deliveredAt: z.string().optional(),
+  shipped_at: z.string().optional(),
+  delivered_at: z.string().optional(),
 });
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const body = await request.json();
     const validatedData = UpdateShipmentSchema.parse(body);
 
     const shipment = await prisma.shipment.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         status: validatedData.status,
-        shippedAt: validatedData.shippedAt
-          ? new Date(validatedData.shippedAt)
+        shipped_at: validatedData.shipped_at
+          ? new Date(validatedData.shipped_at)
           : undefined,
-        deliveredAt: validatedData.deliveredAt
-          ? new Date(validatedData.deliveredAt)
+        delivered_at: validatedData.delivered_at
+          ? new Date(validatedData.delivered_at)
           : undefined,
       },
       include: {
         orders: {
-          include: { details: { include: { product: true } } },
+          include: { details: { include: { item: true } } },
         },
         warehouse: true,
         trackings: true,
@@ -79,9 +81,10 @@ export async function PUT(
 // Add tracking update
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const body = await request.json();
 
     const TrackingSchema = z.object({
@@ -94,7 +97,7 @@ export async function POST(
 
     const tracking = await prisma.shipment_tracking.create({
       data: {
-        shipmentId: params.id,
+        shipment_id: id,
         ...trackingData,
       },
     });

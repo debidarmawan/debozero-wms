@@ -14,24 +14,24 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     const [products, total] = await Promise.all([
-      prisma.product.findMany({
+      prisma.item.findMany({
         where: search
           ? {
               OR: [
-                { sku: { contains: search } },
+                { code: { contains: search } },
                 { name: { contains: search } },
               ],
             }
           : {},
         skip,
         take: limit,
-        orderBy: { createdAt: "desc" },
+        orderBy: { created_at: "desc" },
       }),
-      prisma.product.count({
+      prisma.item.count({
         where: search
           ? {
               OR: [
-                { sku: { contains: search } },
+                { code: { contains: search } },
                 { name: { contains: search } },
               ],
             }
@@ -66,15 +66,15 @@ export async function POST(request: NextRequest) {
     const validatedData = ProductSchema.parse(body);
 
     // Check if SKU already exists
-    const existingProduct = await prisma.product.findUnique({
-      where: { sku: validatedData.sku },
+    const existingProduct = await prisma.item.findUnique({
+      where: { code: validatedData.code },
     });
 
     if (existingProduct) {
       return errorResponse("SKU already exists", 400, "Bad Request");
     }
 
-    const product = await prisma.product.create({
+    const product = await prisma.item.create({
       data: validatedData,
     });
 

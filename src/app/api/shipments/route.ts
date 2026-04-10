@@ -4,9 +4,9 @@ import { successResponse, errorResponse, createdResponse } from "@/utils/respons
 import { z } from "zod";
 
 const CreateShipmentSchema = z.object({
-  orderId: z.string().uuid(),
-  warehouseId: z.string().uuid(),
-  trackingNumber: z.string().min(1),
+  order_id: z.string().uuid(),
+  warehouse_id: z.string().uuid(),
+  tracking_number: z.string().min(1),
   carrier: z.string().optional(),
 });
 
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const status = searchParams.get("status");
-    const warehouseId = searchParams.get("warehouseId");
+    const warehouse_id = searchParams.get("warehouse_id");
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
 
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
 
     const where: any = {};
     if (status) where.status = status;
-    if (warehouseId) where.warehouseId = warehouseId;
+    if (warehouse_id) where.warehouse_id = warehouse_id;
 
     const [shipments, total] = await Promise.all([
       prisma.shipment.findMany({
@@ -32,12 +32,12 @@ export async function GET(request: NextRequest) {
         take: limit,
         include: {
           orders: {
-            include: { details: { include: { product: true } } },
+            include: { details: { include: { item: true } } },
           },
           warehouse: true,
           trackings: { orderBy: { timestamp: "desc" } },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { created_at: "desc" },
       }),
       prisma.shipment.count({ where }),
     ]);
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
 
     // Check if order exists
     const order = await prisma.orders.findUnique({
-      where: { id: validatedData.orderId },
+      where: { id: validatedData.order_id },
     });
 
     if (!order) {
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
 
     // Check if tracking number is unique
     const existingTracking = await prisma.shipment.findUnique({
-      where: { trackingNumber: validatedData.trackingNumber },
+      where: { tracking_number: validatedData.tracking_number },
     });
 
     if (existingTracking) {
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
       },
       include: {
         orders: {
-          include: { details: { include: { product: true } } },
+          include: { details: { include: { item: true } } },
         },
         warehouse: true,
         trackings: true,

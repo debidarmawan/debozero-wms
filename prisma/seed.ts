@@ -43,63 +43,57 @@ async function main() {
   console.log("✅ Warehouses created:", warehouse1.name, warehouse2.name);
 
   // Create sample products
-  const product1 = await prisma.product.create({
+  const product1 = await prisma.item.create({
     data: {
-      sku: "SKU-001",
+      code: "SKU-001",
       name: "Electronic Component A",
-      description: "High-quality electronic component",
-      price: "150.00",
-      weight: "2.5",
+      status: true,
     },
   });
 
-  const product2 = await prisma.product.create({
+  const product2 = await prisma.item.create({
     data: {
-      sku: "SKU-002",
+      code: "SKU-002",
       name: "Electronic Component B",
-      description: "Standard electronic component",
-      price: "100.00",
-      weight: "1.5",
+      status: true,
     },
   });
 
-  const product3 = await prisma.product.create({
+  const product3 = await prisma.item.create({
     data: {
-      sku: "SKU-003",
+      code: "SKU-003",
       name: "Mechanical Part X",
-      description: "Durable mechanical part",
-      price: "250.00",
-      weight: "5.0",
+      status: true,
     },
   });
 
-  console.log("✅ Products created:", product1.sku, product2.sku, product3.sku);
+  console.log("✅ Products created:", product1.code, product2.code, product3.code);
 
   // Create inventory items
   await prisma.inventory_item.create({
     data: {
-      productId: product1.id,
-      warehouseId: warehouse1.id,
+      item_id: product1.id,
+      warehouse_id: warehouse1.id,
       quantity: 500,
-      minStock: 50,
+      min_stock: 50,
     },
   });
 
   await prisma.inventory_item.create({
     data: {
-      productId: product2.id,
-      warehouseId: warehouse1.id,
+      item_id: product2.id,
+      warehouse_id: warehouse1.id,
       quantity: 1000,
-      minStock: 100,
+      min_stock: 100,
     },
   });
 
   await prisma.inventory_item.create({
     data: {
-      productId: product3.id,
-      warehouseId: warehouse2.id,
+      item_id: product3.id,
+      warehouse_id: warehouse2.id,
       quantity: 200,
-      minStock: 30,
+      min_stock: 30,
     },
   });
 
@@ -108,18 +102,18 @@ async function main() {
   // Create sample orders
   const order1 = await prisma.orders.create({
     data: {
-      orderNumber: "ORD-2024-001",
+      order_number: "ORD-2024-001",
       type: "inbound",
-      warehouseId: warehouse1.id,
+      warehouse_id: warehouse1.id,
       status: "pending",
-      totalAmount: "15000.00",
+      total_amount: "15000.00",
       details: {
         createMany: {
           data: [
             {
-              productId: product1.id,
+              item_id: product1.id,
               quantity: 100,
-              unitPrice: "150.00",
+              unit_price: "150.00",
             },
           ],
         },
@@ -129,18 +123,18 @@ async function main() {
 
   const order2 = await prisma.orders.create({
     data: {
-      orderNumber: "ORD-2024-002",
+      order_number: "ORD-2024-002",
       type: "outbound",
-      warehouseId: warehouse1.id,
+      warehouse_id: warehouse1.id,
       status: "confirmed",
-      totalAmount: "25000.00",
+      total_amount: "25000.00",
       details: {
         createMany: {
           data: [
             {
-              productId: product2.id,
+              item_id: product2.id,
               quantity: 250,
-              unitPrice: "100.00",
+              unit_price: "100.00",
             },
           ],
         },
@@ -148,14 +142,14 @@ async function main() {
     },
   });
 
-  console.log("✅ Orders created:", order1.orderNumber, order2.orderNumber);
+  console.log("✅ Orders created:", order1.order_number, order2.order_number);
 
   // Create shipments
   await prisma.shipment.create({
     data: {
-      orderId: order2.id,
-      warehouseId: warehouse1.id,
-      trackingNumber: "TRK-2024-001",
+      order_id: order2.id,
+      warehouse_id: warehouse1.id,
+      tracking_number: "TRK-2024-001",
       carrier: "JNE",
       status: "pending",
       trackings: {
