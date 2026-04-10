@@ -27,12 +27,12 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard size={18} strokeWidth={2} />, roles: ['admin', 'manager', 'staff'] },
-  { label: 'Inventory', href: '/dashboard/inventory', icon: <Boxes size={18} strokeWidth={2} />, roles: ['admin', 'manager', 'staff'] },
-  { label: 'Orders', href: '/dashboard/orders', icon: <ClipboardList size={18} strokeWidth={2} />, roles: ['admin', 'manager', 'staff'] },
-  { label: 'Shipments', href: '/dashboard/shipments', icon: <Truck size={18} strokeWidth={2} />, roles: ['admin', 'manager', 'staff'] },
-  { label: 'Items', href: '/dashboard/items', icon: <Tags size={18} strokeWidth={2} />, roles: ['admin', 'manager'] },
-  { label: 'Warehouses', href: '/dashboard/warehouses', icon: <Warehouse size={18} strokeWidth={2} />, roles: ['admin', 'manager'] },
-  { label: 'Users', href: '/dashboard/users', icon: <Users size={18} strokeWidth={2} />, roles: ['admin'] },
+  { label: 'Items', href: '/items', icon: <Tags size={18} strokeWidth={2} />, roles: ['admin', 'manager'] },
+  { label: 'Inventory', href: '/inventory', icon: <Boxes size={18} strokeWidth={2} />, roles: ['admin', 'manager', 'staff'] },
+  { label: 'Orders', href: '/orders', icon: <ClipboardList size={18} strokeWidth={2} />, roles: ['admin', 'manager', 'staff'] },
+  { label: 'Shipments', href: '/shipments', icon: <Truck size={18} strokeWidth={2} />, roles: ['admin', 'manager', 'staff'] },
+  { label: 'Warehouses', href: '/warehouses', icon: <Warehouse size={18} strokeWidth={2} />, roles: ['admin', 'manager'] },
+  { label: 'Users', href: '/users', icon: <Users size={18} strokeWidth={2} />, roles: ['admin'] },
 ];
 
 function getHeaderSectionTitle(pathname: string): string {
@@ -44,11 +44,14 @@ function getHeaderSectionTitle(pathname: string): string {
   return match?.label ?? 'Dashboard';
 }
 
+type CollapsedNavFlyout = { label: string; top: number; left: number };
+
 export function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [userRole, setUserRole] = useState<string>('');
   const [isOpen, setIsOpen] = useState(false);
+  const [collapsedFlyout, setCollapsedFlyout] = useState<CollapsedNavFlyout | null>(null);
 
   useEffect(() => {
     // Get user info from localStorage on mount only
@@ -71,6 +74,20 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     }
   }, [router]);
 
+  const showCollapsedLabel = (label: string, anchor: HTMLElement) => {
+    if (isOpen) return;
+    const r = anchor.getBoundingClientRect();
+    setCollapsedFlyout({
+      label,
+      top: r.top + r.height / 2,
+      left: r.right + 10,
+    });
+  };
+
+  const hideCollapsedLabel = () => {
+    setCollapsedFlyout(null);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -81,6 +98,16 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 text-slate-800">
+      {!isOpen && collapsedFlyout ? (
+        <div
+          role="tooltip"
+          className="pointer-events-none fixed z-[200] max-w-[min(16rem,calc(100vw-6rem))] -translate-y-1/2 truncate rounded-lg border border-slate-600/80 bg-slate-800 px-3 py-2 text-xs font-medium text-slate-100 shadow-xl"
+          style={{ top: collapsedFlyout.top, left: collapsedFlyout.left }}
+        >
+          {collapsedFlyout.label}
+        </div>
+      ) : null}
+
       {/* Sidebar */}
       <aside className={`${isOpen ? 'w-64' : 'w-20'} border-r border-white/60 bg-slate-900/95 text-slate-100 shadow-2xl backdrop-blur transition-all duration-300 flex flex-col`}>
         <div className={`flex items-center border-b border-slate-700/60 p-3 ${isOpen ? 'justify-between' : 'justify-center'}`}>
@@ -93,7 +120,10 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           <button
             type="button"
             aria-label={isOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => {
+              setCollapsedFlyout(null);
+              setIsOpen((open) => !open);
+            }}
             className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg text-slate-200 transition-colors hover:bg-slate-800 [&_svg]:block [&_svg]:size-[18px]"
           >
             {isOpen ? <PanelLeftClose size={18} strokeWidth={2} /> : <PanelLeftOpen size={18} strokeWidth={2} />}
@@ -110,7 +140,11 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
-                title={!isOpen ? item.label : undefined}
+                aria-label={!isOpen ? item.label : undefined}
+                onMouseEnter={(e) => showCollapsedLabel(item.label, e.currentTarget)}
+                onMouseLeave={hideCollapsedLabel}
+                onFocus={(e) => showCollapsedLabel(item.label, e.currentTarget)}
+                onBlur={hideCollapsedLabel}
                 className={`group mb-1 flex items-center rounded-xl py-2.5 text-sm transition-all ${
                   isOpen ? 'gap-3 px-3' : 'justify-center px-0'
                 } ${
@@ -141,7 +175,11 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         <div className="border-t border-slate-700/60 p-2">
           <button
             type="button"
-            title={!isOpen ? 'Logout' : undefined}
+            aria-label={!isOpen ? 'Logout' : undefined}
+            onMouseEnter={(e) => showCollapsedLabel('Logout', e.currentTarget)}
+            onMouseLeave={hideCollapsedLabel}
+            onFocus={(e) => showCollapsedLabel('Logout', e.currentTarget)}
+            onBlur={hideCollapsedLabel}
             onClick={handleLogout}
             className={`flex w-full items-center rounded-xl py-2.5 text-sm text-rose-200 transition-colors hover:bg-rose-500/15 ${
               isOpen ? 'gap-3 px-3' : 'justify-center px-0'

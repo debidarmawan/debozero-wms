@@ -33,7 +33,6 @@ export default function DashboardPage() {
           return;
         }
 
-        // Fetch basic stats (replace with actual API calls later)
         setStats({
           totalOrders: 0,
           totalProducts: 0,
@@ -60,60 +59,57 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-        <section className="rounded-3xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-7 text-white shadow-xl">
-          <h1 className="text-3xl font-bold">Welcome back</h1>
-          <p className="mt-2 text-cyan-50">
-            Track order flow, stock health, and warehouse activity in one place.
-          </p>
-        </section>
+      <section className="rounded-3xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-7 text-white shadow-xl">
+        <h1 className="text-3xl font-bold">Welcome back</h1>
+        <p className="mt-2 text-cyan-50">
+          Track order flow, stock health, and warehouse activity in one place.
+        </p>
+      </section>
 
-        {/* Stats Grid */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <StatCard
+          title="Total Orders"
+          value={stats.totalOrders}
+          icon={<ClipboardList size={20} />}
+          accent="from-blue-500 to-cyan-500"
+        />
+        <StatCard
+          title="Items"
+          value={stats.totalProducts}
+          icon={<Tags size={20} />}
+          accent="from-emerald-500 to-green-500"
+        />
+        <StatCard
+          title="Warehouses"
+          value={stats.totalWarehouses}
+          icon={<Warehouse size={20} />}
+          accent="from-amber-500 to-orange-500"
+        />
+        <StatCard
+          title="Low Stock Items"
+          value={stats.lowStockItems}
+          icon={<AlertTriangle size={20} />}
+          accent="from-rose-500 to-red-500"
+        />
+      </div>
+
+      <div className="rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm">
+        <h2 className="mb-4 text-xl font-semibold text-slate-800">Quick Actions</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <StatCard
-            title="Total Orders"
-            value={stats.totalOrders}
-            icon={<ClipboardList size={20} />}
-            accent="from-blue-500 to-cyan-500"
-          />
-          <StatCard
-            title="Items"
-            value={stats.totalProducts}
-            icon={<Tags size={20} />}
-            accent="from-emerald-500 to-green-500"
-          />
-          <StatCard
-            title="Warehouses"
-            value={stats.totalWarehouses}
-            icon={<Warehouse size={20} />}
-            accent="from-amber-500 to-orange-500"
-          />
-          <StatCard
-            title="Low Stock Items"
-            value={stats.lowStockItems}
-            icon={<AlertTriangle size={20} />}
-            accent="from-rose-500 to-red-500"
-          />
-        </div>
-
-        {/* Quick Actions */}
-        <div className="rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm">
-          <h2 className="mb-4 text-xl font-semibold text-slate-800">Quick Actions</h2>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <QuickActionButton label="Create Order" href="/dashboard/orders" icon={<PlusCircle size={18} />} />
-            <QuickActionButton label="Add Item" href="/dashboard/items" icon={<Tags size={18} />} />
-            <QuickActionButton label="Check Inventory" href="/dashboard/inventory" icon={<PackageSearch size={18} />} />
-            <QuickActionButton label="Track Shipment" href="/dashboard/shipments" icon={<Truck size={18} />} />
-          </div>
-        </div>
-
-        {/* Recent Activity */}
-        <div className="rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm">
-          <h2 className="mb-4 text-xl font-semibold text-slate-800">Recent Activity</h2>
-          <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 py-8 text-center text-slate-500">
-            No recent activity
-          </div>
+          <QuickActionButton label="Create Order" href="/orders" icon={<PlusCircle size={18} />} />
+          <QuickActionButton label="Add Item" href="/items" icon={<Tags size={18} />} />
+          <QuickActionButton label="Check Inventory" href="/inventory" icon={<PackageSearch size={18} />} />
+          <QuickActionButton label="Track Shipment" href="/shipments" icon={<Truck size={18} />} />
         </div>
       </div>
+
+      <div className="rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm">
+        <h2 className="mb-4 text-xl font-semibold text-slate-800">Recent Activity</h2>
+        <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 py-8 text-center text-slate-500">
+          No recent activity
+        </div>
+      </div>
+    </div>
   );
 }
 
