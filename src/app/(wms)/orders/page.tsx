@@ -1,7 +1,7 @@
-import { DashboardPageHeader } from '@/app/dashboard/_components/DashboardPageHeader';
+import { DashboardPageHeader } from '@/components/DashboardPageHeader';
 import { ClipboardList } from 'lucide-react';
 
-export default function DashboardOrdersPage() {
+export default function OrdersPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader

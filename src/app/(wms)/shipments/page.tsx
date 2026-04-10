@@ -1,7 +1,7 @@
-import { DashboardPageHeader } from '@/app/dashboard/_components/DashboardPageHeader';
+import { DashboardPageHeader } from '@/components/DashboardPageHeader';
 import { Truck } from 'lucide-react';
 
-export default function DashboardShipmentsPage() {
+export default function ShipmentsPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
