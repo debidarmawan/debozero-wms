@@ -2,8 +2,8 @@
 
 import { ReactNode } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState, useEffect, startTransition } from 'react';
 import {
   LayoutDashboard,
   Boxes,
@@ -26,17 +26,27 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard size={18} />, roles: ['admin', 'manager', 'staff'] },
-  { label: 'Inventory', href: '/dashboard/inventory', icon: <Boxes size={18} />, roles: ['admin', 'manager', 'staff'] },
-  { label: 'Orders', href: '/dashboard/orders', icon: <ClipboardList size={18} />, roles: ['admin', 'manager', 'staff'] },
-  { label: 'Shipments', href: '/dashboard/shipments', icon: <Truck size={18} />, roles: ['admin', 'manager', 'staff'] },
-  { label: 'Items', href: '/dashboard/items', icon: <Tags size={18} />, roles: ['admin', 'manager'] },
-  { label: 'Warehouses', href: '/dashboard/warehouses', icon: <Warehouse size={18} />, roles: ['admin', 'manager'] },
-  { label: 'Users', href: '/dashboard/users', icon: <Users size={18} />, roles: ['admin'] },
+  { label: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard size={18} strokeWidth={2} />, roles: ['admin', 'manager', 'staff'] },
+  { label: 'Inventory', href: '/dashboard/inventory', icon: <Boxes size={18} strokeWidth={2} />, roles: ['admin', 'manager', 'staff'] },
+  { label: 'Orders', href: '/dashboard/orders', icon: <ClipboardList size={18} strokeWidth={2} />, roles: ['admin', 'manager', 'staff'] },
+  { label: 'Shipments', href: '/dashboard/shipments', icon: <Truck size={18} strokeWidth={2} />, roles: ['admin', 'manager', 'staff'] },
+  { label: 'Items', href: '/dashboard/items', icon: <Tags size={18} strokeWidth={2} />, roles: ['admin', 'manager'] },
+  { label: 'Warehouses', href: '/dashboard/warehouses', icon: <Warehouse size={18} strokeWidth={2} />, roles: ['admin', 'manager'] },
+  { label: 'Users', href: '/dashboard/users', icon: <Users size={18} strokeWidth={2} />, roles: ['admin'] },
 ];
+
+function getHeaderSectionTitle(pathname: string): string {
+  const match = navItems.find(
+    (item) =>
+      pathname === item.href ||
+      (item.href !== '/dashboard' && pathname.startsWith(`${item.href}/`))
+  );
+  return match?.label ?? 'Dashboard';
+}
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [userRole, setUserRole] = useState<string>('');
   const [isOpen, setIsOpen] = useState(false);
 
@@ -52,12 +62,14 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     
     try {
       const userData = JSON.parse(user);
-      setUserRole(userData.role);
+      startTransition(() => {
+        setUserRole(userData.role);
+      });
     } catch (error) {
       console.error('Failed to parse user data:', error);
       router.push('/login');
     }
-  }, []); // Empty dependency array - run only once on mount
+  }, [router]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -71,46 +83,74 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 text-slate-800">
       {/* Sidebar */}
       <aside className={`${isOpen ? 'w-64' : 'w-20'} border-r border-white/60 bg-slate-900/95 text-slate-100 shadow-2xl backdrop-blur transition-all duration-300 flex flex-col`}>
-        <div className="p-4 flex items-center justify-between border-b border-slate-700/60">
-          {isOpen && (
-            <div className="flex items-center gap-2">
-              <Sparkles size={18} className="text-cyan-300" />
-              <h1 className="font-semibold tracking-wide">WMS Console</h1>
+        <div className={`flex items-center border-b border-slate-700/60 p-3 ${isOpen ? 'justify-between' : 'justify-center'}`}>
+          {isOpen ? (
+            <div className="flex min-w-0 flex-1 items-center gap-2 pr-2">
+              <Sparkles size={18} className="shrink-0 text-cyan-300" strokeWidth={2} />
+              <h1 className="truncate font-semibold tracking-wide">WMS Console</h1>
             </div>
-          )}
-          <button onClick={() => setIsOpen(!isOpen)} className={`rounded-lg p-2 hover:bg-slate-800 transition-colors ${!isOpen && 'mx-auto'}`}>
-            {isOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
+          ) : null}
+          <button
+            type="button"
+            aria-label={isOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+            onClick={() => setIsOpen(!isOpen)}
+            className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg text-slate-200 transition-colors hover:bg-slate-800 [&_svg]:block [&_svg]:size-[18px]"
+          >
+            {isOpen ? <PanelLeftClose size={18} strokeWidth={2} /> : <PanelLeftOpen size={18} strokeWidth={2} />}
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto p-3">
-          {filteredNavItems.map(item => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="group mb-1 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-200 transition-all hover:bg-cyan-500/20 hover:text-cyan-200"
-            >
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800/70 text-cyan-200 group-hover:bg-cyan-500/20">
-                {item.icon}
-              </span>
-              <span className={`transition-all ${isOpen ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
-                {item.label}
-              </span>
-            </Link>
-          ))}
+        <nav className="flex-1 overflow-y-auto p-2">
+          {filteredNavItems.map(item => {
+            const isActive =
+              pathname === item.href ||
+              (item.href !== '/dashboard' && pathname.startsWith(`${item.href}/`));
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                title={!isOpen ? item.label : undefined}
+                className={`group mb-1 flex items-center rounded-xl py-2.5 text-sm transition-all ${
+                  isOpen ? 'gap-3 px-3' : 'justify-center px-0'
+                } ${
+                  isActive
+                    ? 'bg-cyan-500/25 text-cyan-100'
+                    : 'text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-200'
+                }`}
+              >
+                <span
+                  className={`inline-flex size-9 shrink-0 items-center justify-center rounded-lg [&_svg]:block [&_svg]:size-[18px] [&_svg]:shrink-0 ${
+                    isActive
+                      ? 'bg-cyan-400/20 text-cyan-100'
+                      : 'bg-slate-800/70 text-cyan-200 group-hover:bg-cyan-500/20'
+                  }`}
+                >
+                  {item.icon}
+                </span>
+                {isOpen ? (
+                  <span className="min-w-0 flex-1 truncate font-medium leading-none">
+                    {item.label}
+                  </span>
+                ) : null}
+              </Link>
+            );
+          })}
         </nav>
 
-        <div className="border-t border-slate-700/60 p-3">
+        <div className="border-t border-slate-700/60 p-2">
           <button
+            type="button"
+            title={!isOpen ? 'Logout' : undefined}
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-rose-200 transition-colors hover:bg-rose-500/15"
+            className={`flex w-full items-center rounded-xl py-2.5 text-sm text-rose-200 transition-colors hover:bg-rose-500/15 ${
+              isOpen ? 'gap-3 px-3' : 'justify-center px-0'
+            }`}
           >
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-500/20">
-              <LogOut size={18} />
+            <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-rose-500/20 [&_svg]:block [&_svg]:size-[18px] [&_svg]:shrink-0">
+              <LogOut size={18} strokeWidth={2} />
             </span>
-            <span className={`transition-all ${isOpen ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
-              Logout
-            </span>
+            {isOpen ? <span className="min-w-0 flex-1 truncate text-left font-medium leading-none">Logout</span> : null}
           </button>
         </div>
       </aside>
@@ -120,6 +160,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         <header className="border-b border-slate-200/70 bg-white/70 backdrop-blur">
           <div className="px-6 py-4 flex items-center justify-between">
             <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-cyan-700">
+                {getHeaderSectionTitle(pathname)}
+              </p>
               <h2 className="text-2xl font-semibold text-slate-800">Warehouse Management System</h2>
               <div className="text-sm text-slate-500">
                 Role: <span className="font-semibold capitalize text-cyan-700">{userRole}</span>
