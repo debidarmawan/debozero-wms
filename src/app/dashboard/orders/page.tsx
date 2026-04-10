@@ -1,17 +1,17 @@
 import { DashboardPageHeader } from '@/app/dashboard/_components/DashboardPageHeader';
-import { Tags } from 'lucide-react';
+import { ClipboardList } from 'lucide-react';
 
-export default function DashboardItemsPage() {
+export default function DashboardOrdersPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
-        title="Items"
-        description="Manage item catalog and attributes."
-        icon={Tags}
-        iconClassName="bg-emerald-100 text-emerald-700"
+        title="Orders"
+        description="Inbound and outbound orders and line items."
+        icon={ClipboardList}
+        iconClassName="bg-blue-100 text-blue-700"
       />
       <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 py-12 text-center text-slate-500">
-        Item CRUD and search will appear here.
+        Order management UI will appear here.
       </div>
     </div>
   );

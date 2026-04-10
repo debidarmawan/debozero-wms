@@ -1,6 +1,5 @@
 'use client';
 
-import { DashboardLayout } from '@/components/DashboardLayout';
 import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -53,17 +52,14 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <DashboardLayout>
-        <div className="rounded-2xl border border-slate-200 bg-white/70 p-10 text-center text-slate-600 shadow-sm">
-          Loading dashboard...
-        </div>
-      </DashboardLayout>
+      <div className="rounded-2xl border border-slate-200 bg-white/70 p-10 text-center text-slate-600 shadow-sm">
+        Loading dashboard...
+      </div>
     );
   }
 
   return (
-    <DashboardLayout>
-      <div className="space-y-8">
+    <div className="space-y-8">
         <section className="rounded-3xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-7 text-white shadow-xl">
           <h1 className="text-3xl font-bold">Welcome back</h1>
           <p className="mt-2 text-cyan-50">
@@ -118,7 +114,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-    </DashboardLayout>
   );
 }
 

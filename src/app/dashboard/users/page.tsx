@@ -1,17 +1,17 @@
 import { DashboardPageHeader } from '@/app/dashboard/_components/DashboardPageHeader';
-import { Tags } from 'lucide-react';
+import { Users } from 'lucide-react';
 
-export default function DashboardItemsPage() {
+export default function DashboardUsersPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
-        title="Items"
-        description="Manage item catalog and attributes."
-        icon={Tags}
-        iconClassName="bg-emerald-100 text-emerald-700"
+        title="Users"
+        description="Staff accounts and role access."
+        icon={Users}
+        iconClassName="bg-slate-200 text-slate-800"
       />
       <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 py-12 text-center text-slate-500">
-        Item CRUD and search will appear here.
+        User administration will appear here.
       </div>
     </div>
   );
