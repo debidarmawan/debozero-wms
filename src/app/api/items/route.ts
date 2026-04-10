@@ -1,9 +1,9 @@
 import { NextRequest } from "next/server";
 import { ProductSchema } from "@/utils/validation";
 import { prisma } from "@/lib/prisma";
-import { successResponse, errorResponse, createdResponse, notFoundResponse } from "@/utils/response";
+import { successResponse, errorResponse, createdResponse } from "@/utils/response";
 
-// GET all products with pagination
+// GET all items with pagination
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
 
-    const [products, total] = await Promise.all([
+    const [items, total] = await Promise.all([
       prisma.item.findMany({
         where: search
           ? {
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
 
     return successResponse(
       {
-        data: products,
+        data: items,
         pagination: {
           page,
           limit,
@@ -49,38 +49,36 @@ export async function GET(request: NextRequest) {
           totalPages: Math.ceil(total / limit),
         },
       },
-      "Products retrieved"
+      "Items retrieved"
     );
   } catch (error: any) {
-    console.error("Get products error:", error);
-    return errorResponse(error.message || "Failed to get products");
+    console.error("Get items error:", error);
+    return errorResponse(error.message || "Failed to get items");
   }
 }
 
-// POST - Create new product
+// POST - Create new item
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Validate input
     const validatedData = ProductSchema.parse(body);
 
-    // Check if SKU already exists
-    const existingProduct = await prisma.item.findUnique({
+    const existingItem = await prisma.item.findUnique({
       where: { code: validatedData.code },
     });
 
-    if (existingProduct) {
+    if (existingItem) {
       return errorResponse("SKU already exists", 400, "Bad Request");
     }
 
-    const product = await prisma.item.create({
+    const item = await prisma.item.create({
       data: validatedData,
     });
 
-    return createdResponse(product, "Product created successfully");
+    return createdResponse(item, "Item created successfully");
   } catch (error: any) {
-    console.error("Create product error:", error);
-    return errorResponse(error.message || "Failed to create product");
+    console.error("Create item error:", error);
+    return errorResponse(error.message || "Failed to create item");
   }
 }

@@ -3,14 +3,14 @@ import { ProductSchema } from "@/utils/validation";
 import { prisma } from "@/lib/prisma";
 import { successResponse, errorResponse, notFoundResponse } from "@/utils/response";
 
-// GET single product
+// GET single item
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await context.params;
-    const product = await prisma.item.findUnique({
+    const item = await prisma.item.findUnique({
       where: { id },
       include: {
         inventories: {
@@ -21,18 +21,18 @@ export async function GET(
       },
     });
 
-    if (!product) {
-      return notFoundResponse("Product not found");
+    if (!item) {
+      return notFoundResponse("Item not found");
     }
 
-    return successResponse(product, "Product retrieved");
+    return successResponse(item, "Item retrieved");
   } catch (error: any) {
-    console.error("Get product error:", error);
-    return errorResponse(error.message || "Failed to get product");
+    console.error("Get item error:", error);
+    return errorResponse(error.message || "Failed to get item");
   }
 }
 
-// PUT - Update product
+// PUT - Update item
 export async function PUT(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
@@ -42,38 +42,38 @@ export async function PUT(
     const body = await request.json();
     const validatedData = ProductSchema.partial().parse(body);
 
-    const product = await prisma.item.update({
+    const item = await prisma.item.update({
       where: { id },
       data: validatedData,
     });
 
-    return successResponse(product, "Product updated successfully");
+    return successResponse(item, "Item updated successfully");
   } catch (error: any) {
     if (error.code === "P2025") {
-      return notFoundResponse("Product not found");
+      return notFoundResponse("Item not found");
     }
-    console.error("Update product error:", error);
-    return errorResponse(error.message || "Failed to update product");
+    console.error("Update item error:", error);
+    return errorResponse(error.message || "Failed to update item");
   }
 }
 
-// DELETE - Delete product
+// DELETE - Delete item
 export async function DELETE(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await context.params;
-    const product = await prisma.item.delete({
+    const item = await prisma.item.delete({
       where: { id },
     });
 
-    return successResponse(product, "Product deleted successfully");
+    return successResponse(item, "Item deleted successfully");
   } catch (error: any) {
     if (error.code === "P2025") {
-      return notFoundResponse("Product not found");
+      return notFoundResponse("Item not found");
     }
-    console.error("Delete product error:", error);
-    return errorResponse(error.message || "Failed to delete product");
+    console.error("Delete item error:", error);
+    return errorResponse(error.message || "Failed to delete item");
   }
 }

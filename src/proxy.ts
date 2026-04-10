@@ -3,7 +3,7 @@ import { getTokenFromRequest, verifyToken } from "@/lib/auth";
 
 export function proxy(request: NextRequest) {
   // Check if route needs authentication
-  const protectedRoutes = ["/api/admin", "/api/products", "/api/warehouses", "/api/orders", "/api/inventory", "/api/shipments"];
+  const protectedRoutes = ["/api/admin", "/api/items", "/api/warehouses", "/api/orders", "/api/inventory", "/api/shipments"];
   
   const pathname = request.nextUrl.pathname;
   const isProtected = protectedRoutes.some(route => pathname.startsWith(route));
