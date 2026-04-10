@@ -14,11 +14,10 @@ export const RegisterSchema = z.object({
 
 // Product schemas
 export const ProductSchema = z.object({
-  sku: z.string().min(1, "SKU is required"),
+  code: z.string().min(1, "SKU is required"),
   name: z.string().min(1, "Product name is required"),
-  description: z.string().optional(),
-  price: z.number().positive("Price must be positive"),
-  weight: z.number().positive("Weight must be positive").optional(),
+  status: z.boolean().optional(),
+  item_type_id: z.string().optional(),
 });
 
 // Warehouse schemas
@@ -31,14 +30,14 @@ export const WarehouseSchema = z.object({
 
 // Order schemas
 export const CreateOrderSchema = z.object({
-  orderNumber: z.string().min(1, "Order number is required"),
+  order_number: z.string().min(1, "Order number is required"),
   type: z.enum(["inbound", "outbound"]),
-  warehouseId: z.string().uuid("Warehouse ID must be a valid UUID"),
+  warehouse_id: z.string().uuid("Warehouse ID must be a valid UUID"),
   details: z.array(
     z.object({
-      productId: z.string().uuid("Product ID must be a valid UUID"),
+      item_id: z.string().uuid("Product ID must be a valid UUID"),
       quantity: z.number().positive(),
-      unitPrice: z.number().positive(),
+      unit_price: z.number().positive(),
     })
   ),
 });

@@ -6,15 +6,16 @@ import { successResponse, errorResponse, notFoundResponse } from "@/utils/respon
 // GET single warehouse
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const warehouse = await prisma.warehouse.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         users: { select: { id: true, name: true, email: true, role: true } },
         inventories: {
-          include: { product: true },
+          include: { item: true },
           take: 10,
         },
         _count: {
@@ -37,14 +38,15 @@ export async function GET(
 // PUT - Update warehouse
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const body = await request.json();
     const validatedData = WarehouseSchema.partial().parse(body);
 
     const warehouse = await prisma.warehouse.update({
-      where: { id: params.id },
+      where: { id },
       data: validatedData,
     });
 
@@ -61,11 +63,12 @@ export async function PUT(
 // DELETE - Delete warehouse
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const warehouse = await prisma.warehouse.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return successResponse(warehouse, "Warehouse deleted successfully");
