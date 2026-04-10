@@ -4,22 +4,35 @@ import { ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import {
+  LayoutDashboard,
+  Boxes,
+  ClipboardList,
+  Truck,
+  Tags,
+  Warehouse,
+  Users,
+  LogOut,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Sparkles,
+} from 'lucide-react';
 
 interface NavItem {
   label: string;
   href: string;
-  icon: string;
+  icon: ReactNode;
   roles?: string[];
 }
 
 const navItems: NavItem[] = [
-  { label: 'Dashboard', href: '/dashboard', icon: '📊', roles: ['admin', 'manager', 'staff'] },
-  { label: 'Inventory', href: '/dashboard/inventory', icon: '📦', roles: ['admin', 'manager', 'staff'] },
-  { label: 'Orders', href: '/dashboard/orders', icon: '📋', roles: ['admin', 'manager', 'staff'] },
-  { label: 'Shipments', href: '/dashboard/shipments', icon: '🚚', roles: ['admin', 'manager', 'staff'] },
-  { label: 'Products', href: '/dashboard/products', icon: '🏷️', roles: ['admin', 'manager'] },
-  { label: 'Warehouses', href: '/dashboard/warehouses', icon: '🏭', roles: ['admin', 'manager'] },
-  { label: 'Users', href: '/dashboard/users', icon: '👥', roles: ['admin'] },
+  { label: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard size={18} />, roles: ['admin', 'manager', 'staff'] },
+  { label: 'Inventory', href: '/dashboard/inventory', icon: <Boxes size={18} />, roles: ['admin', 'manager', 'staff'] },
+  { label: 'Orders', href: '/dashboard/orders', icon: <ClipboardList size={18} />, roles: ['admin', 'manager', 'staff'] },
+  { label: 'Shipments', href: '/dashboard/shipments', icon: <Truck size={18} />, roles: ['admin', 'manager', 'staff'] },
+  { label: 'Items', href: '/dashboard/items', icon: <Tags size={18} />, roles: ['admin', 'manager'] },
+  { label: 'Warehouses', href: '/dashboard/warehouses', icon: <Warehouse size={18} />, roles: ['admin', 'manager'] },
+  { label: 'Users', href: '/dashboard/users', icon: <Users size={18} />, roles: ['admin'] },
 ];
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
@@ -55,38 +68,47 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
   const filteredNavItems = navItems.filter(item => !item.roles || item.roles.includes(userRole));
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 text-slate-800">
       {/* Sidebar */}
-      <aside className={`${isOpen ? 'w-64' : 'w-16'} bg-gray-900 text-white transition-all duration-300 flex flex-col`}>
-        <div className="p-4 flex items-center justify-between">
-          {isOpen && <h1 className="font-bold text-xl">WMS</h1>}
-          <button onClick={() => setIsOpen(!isOpen)} className={`p-1 hover:bg-gray-800 rounded ${!isOpen && 'mx-auto'}`}>
-            ☰
+      <aside className={`${isOpen ? 'w-64' : 'w-20'} border-r border-white/60 bg-slate-900/95 text-slate-100 shadow-2xl backdrop-blur transition-all duration-300 flex flex-col`}>
+        <div className="p-4 flex items-center justify-between border-b border-slate-700/60">
+          {isOpen && (
+            <div className="flex items-center gap-2">
+              <Sparkles size={18} className="text-cyan-300" />
+              <h1 className="font-semibold tracking-wide">WMS Console</h1>
+            </div>
+          )}
+          <button onClick={() => setIsOpen(!isOpen)} className={`rounded-lg p-2 hover:bg-slate-800 transition-colors ${!isOpen && 'mx-auto'}`}>
+            {isOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto py-4">
+        <nav className="flex-1 overflow-y-auto p-3">
           {filteredNavItems.map(item => (
             <Link
               key={item.href}
               href={item.href}
-              className="flex items-center px-4 py-3 hover:bg-gray-800 transition-colors text-sm"
+              className="group mb-1 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-200 transition-all hover:bg-cyan-500/20 hover:text-cyan-200"
             >
-              <span className="text-xl">{item.icon}</span>
-              <span className={`ml-3 transition-all ${isOpen ? 'opacity-100' : 'opacity-0 w-0'}`}>
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800/70 text-cyan-200 group-hover:bg-cyan-500/20">
+                {item.icon}
+              </span>
+              <span className={`transition-all ${isOpen ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
                 {item.label}
               </span>
             </Link>
           ))}
         </nav>
 
-        <div className="border-t border-gray-800 p-4">
+        <div className="border-t border-slate-700/60 p-3">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center px-4 py-2 hover:bg-gray-800 rounded transition-colors text-sm"
+            className="w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-rose-200 transition-colors hover:bg-rose-500/15"
           >
-            <span className="text-xl">🚪</span>
-            <span className={`ml-3 transition-all ${isOpen ? 'opacity-100' : 'opacity-0 w-0'}`}>
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-500/20">
+              <LogOut size={18} />
+            </span>
+            <span className={`transition-all ${isOpen ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
               Logout
             </span>
           </button>
@@ -95,19 +117,19 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white shadow">
+        <header className="border-b border-slate-200/70 bg-white/70 backdrop-blur">
           <div className="px-6 py-4 flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-semibold text-gray-800">Warehouse Management System</h2>
-              <div className="text-sm text-gray-600">
-                Role: <span className="font-semibold">{userRole}</span>
+              <h2 className="text-2xl font-semibold text-slate-800">Warehouse Management System</h2>
+              <div className="text-sm text-slate-500">
+                Role: <span className="font-semibold capitalize text-cyan-700">{userRole}</span>
               </div>
             </div>
             <button
               onClick={handleLogout}
-              className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100 transition-colors"
+              className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-white px-4 py-2 text-sm font-medium text-rose-600 shadow-sm transition-colors hover:bg-rose-50"
             >
-              <span>🚪</span>
+              <LogOut size={16} />
               <span>Logout</span>
             </button>
           </div>
