@@ -1,17 +1,17 @@
 import { DashboardPageHeader } from '@/app/dashboard/_components/DashboardPageHeader';
-import { Tags } from 'lucide-react';
+import { Boxes } from 'lucide-react';
 
-export default function DashboardItemsPage() {
+export default function DashboardInventoryPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
-        title="Items"
-        description="Manage item catalog and attributes."
-        icon={Tags}
-        iconClassName="bg-emerald-100 text-emerald-700"
+        title="Inventory"
+        description="Stock levels per warehouse and low-stock alerts."
+        icon={Boxes}
+        iconClassName="bg-violet-100 text-violet-700"
       />
       <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 py-12 text-center text-slate-500">
-        Item CRUD and search will appear here.
+        Inventory list and filters will appear here.
       </div>
     </div>
   );
