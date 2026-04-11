@@ -13,6 +13,7 @@ export async function GET(
     const item = await prisma.item.findUnique({
       where: { id },
       include: {
+        warehouse: true,
         inventories: {
           include: {
             warehouse: true,
@@ -42,9 +43,17 @@ export async function PUT(
     const body = await request.json();
     const validatedData = ProductSchema.partial().parse(body);
 
+    const data = { ...validatedData } as Record<string, unknown>;
+    if (data.code === "") delete data.code;
+    if (data.name === "") delete data.name;
+
+    if (Object.keys(data).length === 0) {
+      return errorResponse("Tidak ada field yang diperbarui", 400, "Bad Request");
+    }
+
     const item = await prisma.item.update({
       where: { id },
-      data: validatedData,
+      data: data as Parameters<typeof prisma.item.update>[0]["data"],
     });
 
     return successResponse(item, "Item updated successfully");

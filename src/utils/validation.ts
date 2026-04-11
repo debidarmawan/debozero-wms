@@ -12,12 +12,19 @@ export const RegisterSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
 });
 
-// Item schemas
+// Item schemas (create + update; partial() used for PUT)
 export const ProductSchema = z.object({
   code: z.string().min(1, "SKU is required"),
   name: z.string().min(1, "Item name is required"),
   status: z.boolean().optional(),
-  item_type_id: z.string().optional(),
+  item_type_id: z.union([z.string().min(1), z.null()]).optional(),
+  control_stock: z.boolean().optional(),
+  safety_stock: z.coerce.number().int().min(0).optional(),
+  minimum_order_quantity: z.coerce.number().int().min(1).optional(),
+  lead_time_in_days: z.coerce.number().int().min(0).optional(),
+  warehouse_id: z.union([z.string().uuid(), z.null()]).optional(),
+  specification: z.union([z.string(), z.null()]).optional(),
+  remark: z.union([z.string(), z.null()]).optional(),
 });
 
 // Warehouse schemas
