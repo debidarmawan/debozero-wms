@@ -12,6 +12,7 @@ import {
   Loader2,
   Package,
   ExternalLink,
+  Plus,
 } from 'lucide-react';
 import type { ApiResponse } from '@/types';
 
@@ -150,9 +151,20 @@ export default function ItemsPage() {
               Cari
             </button>
           </form>
-          <p className="text-sm text-slate-500">
-            Total: <span className="font-semibold text-slate-700">{pagination.total}</span> item
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-sm text-slate-500">
+              Total:{' '}
+              <span className="font-semibold text-slate-700">{pagination.total}</span>{' '}
+              item
+            </p>
+            <Link
+              href="/items/new"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-cyan-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-cyan-700"
+            >
+              <Plus className="size-4" strokeWidth={2} />
+              Tambah item
+            </Link>
+          </div>
         </div>
 
         {error ? (
