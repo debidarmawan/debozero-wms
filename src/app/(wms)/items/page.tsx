@@ -46,7 +46,7 @@ export default function ItemsPage() {
   const [items, setItems] = useState<ItemRow[]>([]);
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 10,
+    limit: 20,
     total: 0,
     totalPages: 0,
   });
@@ -184,7 +184,8 @@ export default function ItemsPage() {
             <table className="w-full min-w-[800px] text-left text-sm">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50/80 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  <th className="px-4 py-3">Kode</th>
+                  <th className="px-4 py-3 text-center">Aksi</th>
+				  <th className="px-4 py-3">Kode</th>
                   <th className="px-4 py-3">Nama</th>
                   <th className="px-4 py-3">Status</th>
                   <th className="px-4 py-3">Kontrol stok</th>
@@ -192,7 +193,6 @@ export default function ItemsPage() {
                   <th className="px-4 py-3 text-right">MOQ</th>
                   <th className="px-4 py-3 text-right">Lead time</th>
                   <th className="px-4 py-3">Diperbarui</th>
-                  <th className="px-4 py-3 text-right">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -201,7 +201,16 @@ export default function ItemsPage() {
                     key={row.id}
                     className="transition-colors hover:bg-cyan-50/40"
                   >
-                    <td className="whitespace-nowrap px-4 py-3 font-mono text-xs font-medium text-slate-800">
+                    <td className="px-4 py-3 text-center">
+                      <Link
+                        href={`/items/${row.id}`}
+                        className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-cyan-700 transition-colors hover:border-cyan-200 hover:bg-cyan-50/60"
+                      >
+                        Detail
+                        <ExternalLink className="size-3.5" strokeWidth={2} />
+                      </Link>
+                    </td>
+					<td className="whitespace-nowrap px-4 py-3 font-mono text-xs font-medium text-slate-800">
                       {row.code}
                     </td>
                     <td className="max-w-[220px] px-4 py-3">
@@ -232,15 +241,6 @@ export default function ItemsPage() {
                     </td>
                     <td className="whitespace-nowrap px-4 py-3 text-xs text-slate-500">
                       {formatDate(row.updated_at)}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <Link
-                        href={`/items/${row.id}`}
-                        className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-cyan-700 transition-colors hover:border-cyan-200 hover:bg-cyan-50/60"
-                      >
-                        Detail
-                        <ExternalLink className="size-3.5" strokeWidth={2} />
-                      </Link>
                     </td>
                   </tr>
                 ))}
